@@ -31,27 +31,35 @@
 ## Question 3: Account Inactivity Alert
 
 ### Approach
-1. Identified last transaction date for each account
-2. Calculated days since last transaction
-3. Filtered for accounts inactive >365 days
-4. Classified account type using the boolean flags
+1. Joined plan and transaction tables to get account details
+2. Calculated days since last transaction using `DATEDIFF`
+3. Classified account types using boolean flags:
+   - `is_regular_savings` for savings accounts
+   - `is_a_fund` for investment accounts
+4. Filtered for accounts with >365 days inactivity
+5. Ordered by longest inactive first for prioritization
 
 ### Challenges
-- Needed to verify date difference calculation syntax
-- Had to ensure proper handling of NULL transaction dates
-- Account type classification required understanding of the boolean flags
+- Needed to verify proper handling of NULL transaction dates
+- Required understanding of status codes (assumed 1=active)
+- Had to ensure accurate date difference calculations
+- Account type classification required testing edge cases
 
 ## Question 4: Customer Lifetime Value (CLV) Estimation
 
 ### Approach
-1. Calculated account tenure in months
-2. Counted total successful transactions
-3. Applied the CLV formula incorporating:
+1. Calculated customer tenure in months since signup
+2. Counted all successful transactions
+3. Implemented CLV formula:
    - Transaction frequency (transactions/tenure)
    - Annualization factor (12)
    - Profit assumption (0.1% of transaction value)
+4. Added NULLIF to handle new customers (zero tenure)
+5. Converted kobo amounts in calculations
+6. Ordered by highest CLV first for marketing prioritization
 
 ### Challenges
-- Needed to prevent division by zero for new customers
-- Had to validate the profit calculation formula
-- Required careful handling of currency conversion
+- Needed to prevent division by zero for new signups
+- Required careful validation of the profit calculation
+- Had to ensure proper currency unit handling (kobo conversion)
+- Formula required multiple nested calculations
